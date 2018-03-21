@@ -3,24 +3,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Seriloger.Core.Services;
 
 namespace Seriloger.Api.Controllers
 {
     [Route("api/[controller]")]
     public class ValuesController : Controller
     {
+        private readonly IKrisLogger _krisLogger;
+
+        public ValuesController(IKrisLogger krisLogger)
+        {
+            _krisLogger = krisLogger;
+        }
+
         // GET api/values
         [HttpGet]
         public IEnumerable<string> Get()
         {
-            return new string[] { "value1", "value2" };
+            _krisLogger.LogDebug("Hi from Get");
+            _krisLogger.LogError($"I'm an error from Get");
+            return new string[] { "Hello", "Seriloger" };
         }
 
         // GET api/values/5
         [HttpGet("{id}")]
         public string Get(int id)
         {
-            return "value";
+            _krisLogger.LogDebug($"Get with Id: {id}");
+            _krisLogger.LogError($"I'm an error from Id: {id}");
+            return $"You've send '{id}'.";
         }
 
         // POST api/values
