@@ -7,4 +7,4 @@ Serilog with ELK Stack
 2. Install Elastic Search https://www.elastic.co/guide/en/elasticsearch/reference/current/_installation.html -> _https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.2.3.msi_
 3. Check, if service is running: http://localhost:9200/
 4. Install Kibana https://www.elastic.co/guide/en/kibana/current/windows.html -> _https://artifacts.elastic.co/downloads/kibana/kibana-6.2.3-windows-x86_64.zip_
-5. Unzip and run Kibana _.\bin\kibana.bat_
+5. Unzip and run Kibana _.\bin\kibana.bat_ -> http://localhost:5601
