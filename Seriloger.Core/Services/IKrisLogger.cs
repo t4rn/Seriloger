@@ -2,7 +2,7 @@
 {
     public interface IKrisLogger
     {
-        void LogDebug(string msg);
-        void LogError(string msg);
+        void LogDebug(string messageTemplate, params object[] propertyValues);
+        void LogError(string messageTemplate, params object[] propertyValues);
     }
 }

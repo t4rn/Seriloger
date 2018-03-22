@@ -28,10 +28,10 @@ namespace Seriloger.Api.Controllers
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public string GetById(int id)
         {
-            _krisLogger.LogDebug($"Get with Id: {id}");
-            _krisLogger.LogError($"I'm an error from Id: {id}");
+            _krisLogger.LogDebug("Get with Id: {id}", id);
+            _krisLogger.LogError("I'm an error from Id: {id}", id);
             return $"You've send '{id}'.";
         }
 

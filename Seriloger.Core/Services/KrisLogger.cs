@@ -2,11 +2,8 @@
 using Serilog.Core;
 using Serilog.Events;
 using Serilog.Sinks.Elasticsearch;
+using Seriloger.Core.Settings;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Seriloger.Core.Services
 {
@@ -14,37 +11,38 @@ namespace Seriloger.Core.Services
     {
         private readonly Logger _log;
 
-        public KrisLogger()
+        public KrisLogger(SerilogSettings settings)
         {
             _log = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
                 .Enrich.FromLogContext()
-                .WriteTo.Console()
-                .WriteTo.File(
-                    @"C:\logs\seriloger\seriloger_debug.txt",
-                    fileSizeLimitBytes: 1_000_000,
-                    rollOnFileSizeLimit: true,
-                    shared: true,
-                    flushToDiskInterval: TimeSpan.FromSeconds(1))
-                .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri("http://localhost:9200"))
+                //.WriteTo.Console()
+                //.WriteTo.File(
+                //    @"C:\logs\seriloger\seriloger_debug.txt",
+                //    fileSizeLimitBytes: 1_000_000,
+                //    rollOnFileSizeLimit: true,
+                //    shared: true,
+                //    flushToDiskInterval: TimeSpan.FromSeconds(1))
+
+                .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(settings.Uri))
                 {
                     AutoRegisterTemplate = true,
-                    MinimumLogEventLevel = LogEventLevel.Debug,
-                    CustomFormatter = new ExceptionAsObjectJsonFormatter(renderMessage: true),
-                    IndexFormat = "seriloger-logs-{0:yyyy.MM.dd}"
+                    MinimumLogEventLevel = Enum.Parse<LogEventLevel>(settings.LogLevel),
+                    CustomFormatter = new ExceptionAsObjectJsonFormatter(renderMessage: true), // for Kibana
+                    IndexFormat = settings.IndexFormat
                 })
                 .CreateLogger();
 
         }
-        public void LogDebug(string msg)
+        public void LogDebug(string messageTemplate, params object [] propertyValues)
         {
-            _log.Debug(msg);
+            _log.Debug(messageTemplate, propertyValues);
         }
 
-        public void LogError(string msg)
+        public void LogError(string messageTemplate, params object[] propertyValues)
         {
-            _log.Error(msg);
+            _log.Error(messageTemplate, propertyValues);
         }
     }
 }

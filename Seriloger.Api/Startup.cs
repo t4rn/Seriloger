@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Seriloger.Core.Services;
+using Seriloger.Core.Settings;
 
 namespace Seriloger.Api
 {
@@ -21,15 +22,16 @@ namespace Seriloger.Api
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
             services.AddScoped<IKrisLogger, KrisLogger>();
 
+            SerilogSettings serilogSettings = new SerilogSettings();
+            Configuration.GetSection("Serilog").Bind(serilogSettings);
+            services.AddSingleton(serilogSettings);
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
