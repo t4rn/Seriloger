@@ -11,4 +11,4 @@ Serilog with ELK Stack
 6. Install Kibana as a Service:  
 _sc create "ElasticSearch Kibana 6.2.3" binPath= "C:\kibana-6.2.3-windows-x86_64\bin\kibana.bat" depend= "Elasticsearch"_ 
 7. To delete a Service:  
-_sc delete "ElasticSearch Kibana 6.2.3"_)
+_sc delete "ElasticSearch Kibana 6.2.3"_
