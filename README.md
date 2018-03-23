@@ -12,3 +12,12 @@ Serilog with ELK Stack
 _sc create "ElasticSearch Kibana 6.2.3" binPath= "C:\kibana-6.2.3-windows-x86_64\bin\kibana.bat" depend= "Elasticsearch"_ 
 7. To delete a Service:  
 _sc delete "ElasticSearch Kibana 6.2.3"_
+
+### Elastic Search disk usage:
+In config _C:\ProgramData\Elastic\Elasticsearch\config\elasticsearch.yml_ add following lines:
+```
+cluster.routing.allocation.disk.threshold_enabled: true  
+cluster.routing.allocation.disk.watermark.flood_stage: 200mb  
+cluster.routing.allocation.disk.watermark.low: 500mb  
+cluster.routing.allocation.disk.watermark.high: 300mb  
+```
