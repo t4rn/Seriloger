@@ -13,17 +13,31 @@ namespace Seriloger.Core.Services
 
         public KrisLogger(SerilogSettings settings)
         {
+            string template = "{Timestamp:yyyy-MM-dd HH:mm:ss.ff} | {Level:u3} | {Message:lj}{Exception} | Action: '{ActionName}'{NewLine}";
+
             _log = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
                 .Enrich.FromLogContext()
                 //.WriteTo.Console()
-                //.WriteTo.File(
-                //    @"C:\logs\seriloger\seriloger_debug.txt",
-                //    fileSizeLimitBytes: 1_000_000,
-                //    rollOnFileSizeLimit: true,
-                //    shared: true,
-                //    flushToDiskInterval: TimeSpan.FromSeconds(1))
+
+                .WriteTo.File(
+                    path: settings.FileDebugPath,
+                    outputTemplate: template,
+                    restrictedToMinimumLevel: LogEventLevel.Verbose,
+                    rollingInterval: RollingInterval.Day,
+                    rollOnFileSizeLimit: true,
+                    shared: true,
+                    flushToDiskInterval: TimeSpan.FromSeconds(1))
+
+                .WriteTo.File(
+                    path: settings.FileErrorPath,
+                    outputTemplate: template,
+                    restrictedToMinimumLevel: LogEventLevel.Error,
+                    rollingInterval: RollingInterval.Day,
+                    rollOnFileSizeLimit: true,
+                    shared: true,
+                    flushToDiskInterval: TimeSpan.FromSeconds(1))
 
                 .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(settings.Uri))
                 {
@@ -35,9 +49,14 @@ namespace Seriloger.Core.Services
                 .CreateLogger();
 
         }
-        public void LogDebug(string messageTemplate, params object [] propertyValues)
+        public void LogDebug(string messageTemplate, params object[] propertyValues)
         {
             _log.Debug(messageTemplate, propertyValues);
+        }
+
+        public void LogWarning(string messageTemplate, params object[] propertyValues)
+        {
+            _log.Warning(messageTemplate, propertyValues);
         }
 
         public void LogError(string messageTemplate, params object[] propertyValues)

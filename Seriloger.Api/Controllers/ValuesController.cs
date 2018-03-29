@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Seriloger.Core.Services;
+using System;
 
 namespace Seriloger.Api.Controllers
 {
@@ -17,40 +15,43 @@ namespace Seriloger.Api.Controllers
             _krisLogger = krisLogger;
         }
 
-        // GET api/values
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IActionResult Ping()
         {
-            _krisLogger.LogDebug("Hi from Get");
-            _krisLogger.LogError($"I'm an error from Get");
-            return new string[] { "Hello", "Seriloger" };
+            _krisLogger.LogDebug("[{method}] START", nameof(Ping));
+            return Ok($"Ping at '{DateTime.Now}' in '{nameof(ValuesController)}'.");
         }
 
-        // GET api/values/5
         [HttpGet("{id}")]
-        public string GetById(int id)
+        public IActionResult GetById(int id)
         {
-            _krisLogger.LogDebug("Get with Id: {id}", id);
-            _krisLogger.LogError("I'm an error from Id: {id}", id);
-            return $"You've send '{id}'.";
-        }
+            IActionResult result;
+            _krisLogger.LogDebug("[{method}] START -> with Id: {id}", nameof(GetById), id);
+            try
+            {
 
-        // POST api/values
-        [HttpPost]
-        public void Post([FromBody]string value)
-        {
-        }
+                if (id < 5)
+                {
+                    _krisLogger.LogDebug("[{method}] Ok -> with Id: {id}", nameof(GetById), id);
+                    result = Ok($"You've send '{id}'.");
+                }
+                else if (id < 20)
+                {
+                    _krisLogger.LogWarning("[{method}] Ok -> with Id: {id}", nameof(GetById), id);
+                    result = BadRequest($"Your Id: '{id}' was a bit to big...");
+                }
+                else
+                {
+                    throw new ArgumentOutOfRangeException("Id exceeded our limit...");
+                }
+            }
+            catch (Exception ex)
+            {
+                _krisLogger.LogError("[{method}] Ex for Id: {id}: {exception}", nameof(GetById), id, ex);
+                result = StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
 
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            return result;
         }
     }
 }
