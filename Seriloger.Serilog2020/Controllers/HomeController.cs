@@ -15,11 +15,12 @@ namespace Seriloger.Serilog2020.Controllers
 
         public HomeController(ILogger<HomeController> logger)
         {
-            _logger = logger;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public IActionResult Index()
+        public IActionResult Index([FromQuery] string name)
         {
+            _logger.LogInformation("Hello, {Name}!", name);
             return View();
         }
 

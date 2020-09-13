@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Serilog;
 
 namespace Seriloger.Serilog2020
 {
@@ -41,6 +42,9 @@ namespace Seriloger.Serilog2020
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
+            // Serilog after StaticFiles
+            app.UseSerilogRequestLogging();
 
             app.UseRouting();
 
